@@ -31,12 +31,23 @@ public class CharacterService {
     public JSONArray getAllCharacter() throws IOException {
 
         JSONArray JsonData = new JSONArray();
-        int Offset = 1;
+
+        int Offset = 0;
+
         String URL = "https://gateway.marvel.com:443/v1/public/characters?ts="+timestamp+"&apikey="+publickey+"&hash="+Hash +"&limit=100"+"&offset="+Offset;
         RestTemplate template = new RestTemplate(); //http request
-        JsonNode result = template.getForEntity(URL+(Offset*100) ,JsonNode.class).getBody();
 
-        JsonData.addAll(result.get("data").get("results").findValues("id"));
+        do {
+            JsonNode result = template.getForEntity(URL + (Offset * 99), JsonNode.class).getBody();
+            if (result != null) {
+                JsonData.addAll(result.get("data").get("results").findValues("id"));
+            } else {
+                System.out.println("Data = null");
+            }
+            Offset++;
+        } while (Offset < 16);
+
+        System.out.println(JsonData.size());
 
         JsonFile.JsonWriter(JsonData);
 
