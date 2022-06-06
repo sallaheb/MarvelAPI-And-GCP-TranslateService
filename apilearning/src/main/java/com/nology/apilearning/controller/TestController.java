@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.net.URL;
 
 @RestController
@@ -32,7 +33,7 @@ public class TestController {
     }
 
     @GetMapping("/characters")
-    private ResponseEntity<JSONArray> getAllCharacters(){
+    private ResponseEntity<JSONArray> getAllCharacters() throws IOException {
 
         return ResponseEntity.status(HttpStatus.OK).body(characterService.getAllCharacter());
     }

@@ -1,12 +1,14 @@
 package com.nology.apilearning.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.nology.apilearning.Util.JsonFile;
 import com.nology.apilearning.models.MarvelCharacter;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.json.simple.JSONArray;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.time.Instant;
 
 @Service
@@ -25,7 +27,7 @@ public class CharacterService {
       // Get Marvel Chracter ID , descrption etc.
     }
 
-    public JSONArray getAllCharacter() {
+    public JSONArray getAllCharacter() throws IOException {
 
         JSONArray JsonData = new JSONArray();
 
@@ -33,6 +35,9 @@ public class CharacterService {
         JsonNode result = template.getForEntity(URL,JsonNode.class).getBody();
 
         JsonData.addAll(result.get("data").get("results").findValues("id"));
+
+
+        JsonFile.JsonWriter(JsonData);
 
 
 
