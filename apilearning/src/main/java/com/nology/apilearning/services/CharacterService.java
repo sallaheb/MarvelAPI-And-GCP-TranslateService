@@ -14,11 +14,12 @@ import java.time.Instant;
 @Service
 public class CharacterService {
 
-    private String publickey = "abfcf82a889a553cc4f8b732b85d8607";
-    private String privatekey = "1e9bd463ba73afb1bdca51cfa2f37a2bad36d2fc";
+    private final String publickey = "abfcf82a889a553cc4f8b732b85d8607";
+    private final String privatekey = "1e9bd463ba73afb1bdca51cfa2f37a2bad36d2fc";
     private Long timestamp = Instant.now().getEpochSecond();
-    private  String Hash = DigestUtils.md5Hex(timestamp+privatekey+publickey);
-    private String URL = "https://gateway.marvel.com:443/v1/public/characters?ts="+timestamp+"&apikey="+publickey+"&hash="+Hash;
+    private final String Hash = DigestUtils.md5Hex(timestamp+privatekey+publickey);
+
+
 
     public MarvelCharacter getSingleCharacter() {
       return  new MarvelCharacter(1,"IronMan", "Clever Guy");
@@ -30,16 +31,14 @@ public class CharacterService {
     public JSONArray getAllCharacter() throws IOException {
 
         JSONArray JsonData = new JSONArray();
-
+        int Offset = 1;
+        String URL = "https://gateway.marvel.com:443/v1/public/characters?ts="+timestamp+"&apikey="+publickey+"&hash="+Hash +"&limit=100"+"&offset="+Offset;
         RestTemplate template = new RestTemplate(); //http request
-        JsonNode result = template.getForEntity(URL,JsonNode.class).getBody();
+        JsonNode result = template.getForEntity(URL+(Offset*100) ,JsonNode.class).getBody();
 
         JsonData.addAll(result.get("data").get("results").findValues("id"));
 
-
         JsonFile.JsonWriter(JsonData);
-
-
 
 
         return JsonData;
