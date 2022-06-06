@@ -1,13 +1,16 @@
 package com.nology.apilearning.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nology.apilearning.Util.JsonFile;
 import com.nology.apilearning.models.MarvelCharacter;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.DataInput;
 import java.io.IOException;
 import java.time.Instant;
 
@@ -22,7 +25,7 @@ public class CharacterService {
 
 
     public MarvelCharacter getSingleCharacter() {
-      return  new MarvelCharacter(1,"IronMan", "Clever Guy");
+      return  new MarvelCharacter(1,"IronMan", "Clever Guy", "path");
       //request // service for API and link it to your controller
       // call this URL
       // Get Marvel Chracter ID , descrption etc.
@@ -51,6 +54,34 @@ public class CharacterService {
 
         JsonFile.JsonWriter(JsonData);
 
+        return JsonData;
+    }
+
+
+
+    public JSONArray getCharacterById(int id) throws IOException {
+
+        JSONArray JsonData = new JSONArray();
+
+        String URL = "https://gateway.marvel.com:443/v1/public/characters/"+id+"?"+"&ts="+timestamp+"&apikey="+publickey+"&hash="+Hash;
+
+        RestTemplate template = new RestTemplate(); //http request
+
+            JsonNode result = template.getForEntity(URL , JsonNode.class).getBody();
+            if (result != null) {
+                JsonData.add(result.get("data").get("results").findValues("id"));
+//                JsonData.add(result.get("data").get("results").findValues("name"));
+                JsonData.add(result.get("data").get("results").findValues("name").get(0));
+                JsonData.add(result.get("data").get("results").findValues("description"));
+                JsonData.add(result.get("data").get("results").findValues("thumbnail"));
+
+            } else {
+                System.out.println("Data = null");
+            }
+
+//        ObjectMapper mapper = new ObjectMapper();
+//        MarvelCharacter character = mapper.readTree();
+//        System.out.println(character);
 
         return JsonData;
     }

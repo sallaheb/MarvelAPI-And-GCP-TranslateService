@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -36,6 +37,12 @@ public class TestController {
     private ResponseEntity<JSONArray> getAllCharacters() throws IOException {
 
         return ResponseEntity.status(HttpStatus.OK).body(characterService.getAllCharacter());
+    }
+
+    @GetMapping("/characters/{id}")
+    private ResponseEntity<JSONArray>getById(@PathVariable String id) throws IOException {
+
+        return ResponseEntity.status(HttpStatus.OK).body(characterService.getCharacterById(Integer.parseInt(id)));
     }
 
 }

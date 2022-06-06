@@ -7,24 +7,12 @@ public class MarvelCharacter {
     private int ID;
     private String name;
     private String description;
+    private String thumbnail;
 
-    public MarvelCharacter(int ID, String name, String description) {
+    public MarvelCharacter(int ID, String name, String description, String thumbnail) {
         this.ID = ID;
         this.name = name;
         this.description = description;
+        this.thumbnail = thumbnail;
     }
-
-
-    public int getID() {
-        return ID;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
 }
