@@ -1,19 +1,14 @@
 package com.nology.apilearning.controller;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.nology.apilearning.models.MarvelCharacter;
 import com.nology.apilearning.services.CharacterService;
 import org.json.simple.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.net.URL;
 
 @RestController
 public class TestController {
@@ -27,11 +22,6 @@ public class TestController {
         return "hello";
     }
 
-    @GetMapping("/character")
-    private ResponseEntity<MarvelCharacter> getCharacter(){
-
-        return ResponseEntity.status(HttpStatus.OK).body(characterService.getSingleCharacter());
-    }
 
     @GetMapping("/characters")
     private ResponseEntity<JSONArray> getAllCharacters() throws IOException {
@@ -39,8 +29,13 @@ public class TestController {
         return ResponseEntity.status(HttpStatus.OK).body(characterService.getAllCharacter());
     }
 
-    @GetMapping("/characters/{id}")
-    private ResponseEntity<JSONArray>getById(@PathVariable String id) throws IOException {
+    @RequestMapping(
+            value = "/characters/{id}",
+            method = RequestMethod.GET,
+            produces = "application/json"
+    )
+    private ResponseEntity<MarvelCharacter> getById(@PathVariable String id) throws IOException {
+
 
         return ResponseEntity.status(HttpStatus.OK).body(characterService.getCharacterById(Integer.parseInt(id)));
     }

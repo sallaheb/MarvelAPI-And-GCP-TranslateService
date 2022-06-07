@@ -3,14 +3,13 @@ package com.nology.apilearning.services;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nology.apilearning.Util.JsonFile;
+import com.nology.apilearning.models.DataEnvelope;
 import com.nology.apilearning.models.MarvelCharacter;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.DataInput;
 import java.io.IOException;
 import java.time.Instant;
 
@@ -24,22 +23,12 @@ public class CharacterService {
 
 
 
-    public MarvelCharacter getSingleCharacter() {
-      return  new MarvelCharacter(1,"IronMan", "Clever Guy", "path");
-      //request // service for API and link it to your controller
-      // call this URL
-      // Get Marvel Chracter ID , descrption etc.
-    }
-
     public JSONArray getAllCharacter() throws IOException {
 
         JSONArray JsonData = new JSONArray();
-
         int Offset = 0;
-
         String URL = "https://gateway.marvel.com:443/v1/public/characters?ts="+timestamp+"&apikey="+publickey+"&hash="+Hash +"&limit=100"+"&offset="+Offset;
         RestTemplate template = new RestTemplate(); //http request
-
         do {
             JsonNode result = template.getForEntity(URL + (Offset * 99), JsonNode.class).getBody();
             if (result != null) {
@@ -50,40 +39,24 @@ public class CharacterService {
             Offset++;
         } while (Offset < 16);
 
-        System.out.println(JsonData.size());
-
         JsonFile.JsonWriter(JsonData);
 
         return JsonData;
     }
 
 
-
-    public JSONArray getCharacterById(int id) throws IOException {
-
-        JSONArray JsonData = new JSONArray();
+    public MarvelCharacter getCharacterById(int id) throws IOException {
 
         String URL = "https://gateway.marvel.com:443/v1/public/characters/"+id+"?"+"&ts="+timestamp+"&apikey="+publickey+"&hash="+Hash;
 
         RestTemplate template = new RestTemplate(); //http request
+        JsonNode result = template.getForEntity(URL , JsonNode.class).getBody();
+        String data = result.toString();
+        ObjectMapper mapper = new ObjectMapper();//converter
+        DataEnvelope results = mapper.readValue(data, DataEnvelope.class);
+        MarvelCharacter marvelCharacter = results.getData().getResults().get(0);
 
-            JsonNode result = template.getForEntity(URL , JsonNode.class).getBody();
-            if (result != null) {
-                JsonData.add(result.get("data").get("results").findValues("id"));
-//                JsonData.add(result.get("data").get("results").findValues("name"));
-                JsonData.add(result.get("data").get("results").findValues("name").get(0));
-                JsonData.add(result.get("data").get("results").findValues("description"));
-                JsonData.add(result.get("data").get("results").findValues("thumbnail"));
-
-            } else {
-                System.out.println("Data = null");
-            }
-
-//        ObjectMapper mapper = new ObjectMapper();
-//        MarvelCharacter character = mapper.readTree();
-//        System.out.println(character);
-
-        return JsonData;
+        return marvelCharacter;
     }
 
 
