@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact name="apilearning">
+    <output-path>$PROJECT_DIR$/out/artifacts/apilearning</output-path>
+    <root id="root">
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="apilearning" />
+        </element>
+        <element id="file-copy" path="$PROJECT_DIR$/apilearning/src/main/webapp/WEB-INF/appengine-web.xml" />
+      </element>
+    </root>
+  </artifact>
+</component>

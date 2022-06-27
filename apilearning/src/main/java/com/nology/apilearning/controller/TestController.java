@@ -1,8 +1,8 @@
 package com.nology.apilearning.controller;
 
+import com.nology.apilearning.Repository.IDs;
 import com.nology.apilearning.models.MarvelCharacter;
 import com.nology.apilearning.services.CharacterService;
-import org.json.simple.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,27 +17,22 @@ public class TestController {
     CharacterService characterService;
 
 
-    @GetMapping("/test")
-    private String test() {
-        return "hello";
-    }
-
-
     @GetMapping("/characters")
-    private ResponseEntity<JSONArray> getAllCharacters() throws IOException {
+    private ResponseEntity<IDs> getAllIDs() throws IOException {
 
-        return ResponseEntity.status(HttpStatus.OK).body(characterService.getAllCharacter());
+        return ResponseEntity.status(HttpStatus.OK).body(characterService.getAllIDs());
     }
 
-    @RequestMapping(
-            value = "/characters/{id}",
-            method = RequestMethod.GET,
-            produces = "application/json"
-    )
-    private ResponseEntity<MarvelCharacter> getById(@PathVariable String id) throws IOException {
+
+    @GetMapping("/characters/{id}")
+    public ResponseEntity<MarvelCharacter> getTranslated(@PathVariable String id, @RequestParam (required = false, defaultValue = "en") String languageCode ) throws IOException, InterruptedException {
+        System.out.println("CONTROLLER HERE");
 
 
-        return ResponseEntity.status(HttpStatus.OK).body(characterService.getCharacterById(Integer.parseInt(id)));
+        return ResponseEntity.status(HttpStatus.OK).body(characterService.toTranslate(Integer.parseInt(id), languageCode));
     }
+
+
+
 
 }
